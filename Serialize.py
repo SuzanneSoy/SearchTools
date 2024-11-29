@@ -3,19 +3,34 @@ from PySide import QtGui
 import json
 
 
-def iconToBase64(icon, sz=QtCore.QSize(64, 64), mode=QtGui.QIcon.Mode.Normal, state=QtGui.QIcon.State.On):
-    buf = QtCore.QBuffer()
-    buf.open(QtCore.QIODevice.WriteOnly)
-    icon.pixmap(sz, mode, state).save(buf, "PNG")
+def iconToBase64(icon: QtGui.QIcon, sz=QtCore.QSize(64, 64), mode=QtGui.QIcon.Mode.Normal, state=QtGui.QIcon.State.On):
+    """
+    Converts a QIcon to a Base64-encoded string representation of its pixmap.
 
-    result = None
+    Args:
+        icon (QIcon): The icon to encode.
+        sz (QSize): The size of the pixmap to generate.
+        mode (QIcon.Mode): The mode of the pixmap (e.g., Normal, Disabled).
+        state (QIcon.State): The state of the pixmap (e.g., On, Off).
+
+    Returns:
+        str: The Base64-encoded string of the icon's pixmap.
+    """
+    buf = QtCore.QBuffer()
+    buf.open(QtCore.QIODevice.OpenModeFlag.WriteOnly)
+
+    # Save the pixmap of the icon to the buffer in PNG format
+    pixmap: QtGui.QPixmap = icon.pixmap(sz, mode, state)
     try:
-        result = QtCore.QTextCodec.codecForName("UTF-8").toUnicode(buf.data().toBase64())
-    except Exception:
-        t = QtCore.QTextStream(buf.data().toBase64())
-        t.setEncoding(QtCore.QStringDecoder.Encoding.Utf8)
-        result = t.readAll()
-    return result
+        pixmap.save(buf, "PNG")
+    except Exception as e:
+        # raise ValueError("Failed to save icon to buffer. Ensure the icon is valid.")
+        print(e)
+
+    # Use standard Base64 encoding
+    base64_data = buf.data().toBase64().data().decode("utf-8")
+    buf.close()
+    return base64_data
 
 
 def iconToHTML(icon, sz=12, mode=QtGui.QIcon.Mode.Normal, state=QtGui.QIcon.State.On):
