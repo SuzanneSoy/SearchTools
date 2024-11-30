@@ -1,6 +1,6 @@
 from PySide import QtGui
 import FreeCADGui
-import Serialize
+import Serialize_SearchBar
 
 
 def toolbarAction(nfo):
@@ -61,7 +61,10 @@ def subToolAction(nfo):
 def toolbarToolTip(nfo, setParent):
     workbenches = FreeCADGui.listWorkbenches()
     in_workbenches = [
-        "<li>" + (Serialize.iconToHTML(QtGui.QIcon(workbenches[wb].Icon)) if wb in workbenches else "? ") + wb + "</li>"
+        "<li>"
+        + (Serialize_SearchBar.iconToHTML(QtGui.QIcon(workbenches[wb].Icon)) if wb in workbenches else "? ")
+        + wb
+        + "</li>"
         for wb in nfo["action"]["workbenches"]
     ]
     return (
@@ -74,7 +77,7 @@ def toolbarToolTip(nfo, setParent):
 
 
 def subToolToolTip(nfo, setParent):
-    return Serialize.iconToHTML(nfo["icon"], 32) + "<p>" + nfo["toolTip"] + "</p>"
+    return Serialize_SearchBar.iconToHTML(nfo["icon"], 32) + "<p>" + nfo["toolTip"] + "</p>"
 
 
 def getAllToolbars():

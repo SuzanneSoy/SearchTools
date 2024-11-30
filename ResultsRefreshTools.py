@@ -1,6 +1,6 @@
 import os
 from PySide import QtGui
-import Serialize
+import Serialize_SearchBar
 
 
 def refreshToolsAction(nfo):
@@ -11,7 +11,7 @@ def refreshToolsAction(nfo):
 
 def refreshToolsToolTip(nfo, setParent):
     return (
-        Serialize.iconToHTML(genericToolIcon)
+        Serialize_SearchBar.iconToHTML(genericToolIcon)
         + "<p>Load all workbenches to refresh this list of tools. This may take a minute, depending on the number of installed workbenches.</p>"
     )
 

@@ -41,18 +41,18 @@ def gatherTools():
 
 
 def writeCacheTools():
-    import Serialize
+    import Serialize_SearchBar
 
-    serializedItemGroups = Serialize.serialize(gatherTools())
+    serializedItemGroups = Serialize_SearchBar.serialize(gatherTools())
     # Todo: use wb and a specific encoding.
     with open(cachePath(), "w") as cache:
         cache.write(serializedItemGroups)
     # I prefer to systematically deserialize, instead of taking the original version,
     # this avoids possible inconsistencies between the original and the cache and
     # makes sure cache-related bugs are noticed quickly.
-    import Serialize
+    import Serialize_SearchBar
 
-    itemGroups = Serialize.deserialize(serializedItemGroups)
+    itemGroups = Serialize_SearchBar.deserialize(serializedItemGroups)
     print("SearchBox: Cache has been written.")
     return itemGroups
 
@@ -61,9 +61,9 @@ def readCacheTools():
     # Todo: use rb and a specific encoding.
     with open(cachePath(), "r") as cache:
         serializedItemGroups = cache.read()
-    import Serialize
+    import Serialize_SearchBar
 
-    itemGroups = Serialize.deserialize(serializedItemGroups)
+    itemGroups = Serialize_SearchBar.deserialize(serializedItemGroups)
     print("SearchBox: Tools were loaded from the cache.")
     return itemGroups
 
