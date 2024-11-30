@@ -48,9 +48,9 @@ def getItemGroups():
 
             itemGroups = RefreshTools.refreshToolbars(doLoadAllWorkbenches=False)
         else:
-            import Serialize
+            import Serialize_SearchBar
 
-            itemGroups = Serialize.deserialize(serializedItemGroups)
+            itemGroups = Serialize_SearchBar.deserialize(serializedItemGroups)
 
     # Aggregate the tools (cached) and document objects (not cached), and assign an index to each
     import SearchResults
