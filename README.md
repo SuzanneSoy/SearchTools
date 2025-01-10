@@ -35,7 +35,7 @@ https://github.com/SuzanneSoy/SearchBar/issues/12 is fixed.
 
 #### Automatic Install
 
-Install **SearchBar** addon via the FreeCAD Addon Manager from the **Tools** :arrow_right: **Addon Manager** dropdown menu. 
+Install **SearchBar** addon via the FreeCAD Addon Manager from the **Tools** :arrow_right: **Addon Manager** dropdown menu.
 
 #### Manual Install
 
@@ -64,7 +64,7 @@ Clone the GIT repository or extract the `.zip` downloaded from GitHub to the fol
 
 ### Feedback
 
-To report bugs or feature enhancements, please open a ticket in the [issue queue](https://github.com/APEbbers/SearchBar/issues). Best place to discuss feedback or issues in on the [dedicated FreeCAD forum discussion]() for SearchBar. 
+To report bugs or feature enhancements, please open a ticket in the [issue queue](https://github.com/APEbbers/SearchBar/issues). Best place to discuss feedback or issues in on the [dedicated FreeCAD forum discussion]() for SearchBar.
 
 ### License [![License: CC0 v1.0.](https://img.shields.io/badge/license-CC0-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 See [LICENSE](LICENSE).

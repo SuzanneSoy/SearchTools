@@ -8,9 +8,12 @@ translate = App.Qt.translate
 class SafeViewer(QtGui.QWidget):
     """FreeCAD uses a modified version of QuarterWidget, so the import pivy.quarter one will cause segfaults.
     FreeCAD's FreeCADGui.createViewer() puts the viewer widget inside an MDI window, and detaching it without causing segfaults on exit is tricky.
-    This class contains some kludges to extract the viewer as a standalone widget and destroy it safely."""
+    This class contains some kludges to extract the viewer as a standalone widget and destroy it safely.
+    """
 
-    enabled = App.ParamGet("User parameter:BaseApp/Preferences/Mod/SearchBar").GetBool("PreviewEnabled", False)
+    enabled = App.ParamGet("User parameter:BaseApp/Preferences/Mod/SearchBar").GetBool(
+        "PreviewEnabled", False
+    )
     instances = []
 
     def __init__(self, parent=None):
@@ -38,11 +41,15 @@ class SafeViewer(QtGui.QWidget):
             self.btn_enable_for_this_session = QtGui.QPushButton(
                 translate("SearchBar", "Enable 3D preview for this session")
             )
-            self.btn_enable_for_this_session.clicked.connect(self.enable_for_this_session)
+            self.btn_enable_for_this_session.clicked.connect(
+                self.enable_for_this_session
+            )
             self.btn_enable_for_future_sessions = QtGui.QPushButton(
                 translate("SearchBar", "Enable 3D preview for future sessions")
             )
-            self.btn_enable_for_future_sessions.clicked.connect(self.enable_for_future_sessions)
+            self.btn_enable_for_future_sessions.clicked.connect(
+                self.enable_for_future_sessions
+            )
             self.setLayout(QtGui.QVBoxLayout())
             self.layout().addWidget(self.lbl_warning)
             self.layout().addWidget(self.btn_enable_for_this_session)
@@ -56,7 +63,9 @@ class SafeViewer(QtGui.QWidget):
     def enable_for_future_sessions(self):
         if not SafeViewer.enabled:
             # Store in prefs
-            App.ParamGet("User parameter:BaseApp/Preferences/Mod/SearchBar").SetBool("PreviewEnabled", True)
+            App.ParamGet("User parameter:BaseApp/Preferences/Mod/SearchBar").SetBool(
+                "PreviewEnabled", True
+            )
             # Then enable as usual
             self.enable_for_this_session()
 
@@ -77,7 +86,9 @@ class SafeViewer(QtGui.QWidget):
             self.graphicsView = self.viewer.graphicsView()
             self.oldGraphicsViewParent = self.graphicsView.parent()
             self.oldGraphicsViewParentParent = self.oldGraphicsViewParent.parent()
-            self.oldGraphicsViewParentParentParent = self.oldGraphicsViewParentParent.parent()
+            self.oldGraphicsViewParentParentParent = (
+                self.oldGraphicsViewParentParent.parent()
+            )
 
             # Avoid segfault but still hide the undesired window by moving it to a new hidden MDI area.
             self.hiddenQMDIArea = QtGui.QMdiArea()

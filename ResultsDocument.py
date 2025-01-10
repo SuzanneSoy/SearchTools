@@ -61,9 +61,14 @@ class DocumentObjectToolTipWidget(QtGui.QWidget):
             # Tried setting the preview to a fixed size to prevent it from disappearing when changing its contents, this sets it to a fixed size but doesn't actually pick the size, .resize does that but isn't enough to fix the bug.
             # safeViewerInstance.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed))
         self.preview = App._SearchBar3DViewer
-        App._SearchBar3DViewer, App._SearchBar3DViewerB = App._SearchBar3DViewerB, App._SearchBar3DViewer
+        App._SearchBar3DViewer, App._SearchBar3DViewerB = (
+            App._SearchBar3DViewerB,
+            App._SearchBar3DViewer,
+        )
 
-        obj = App.getDocument(str(nfo["toolTip"]["docName"])).getObject(str(nfo["toolTip"]["name"]))
+        obj = App.getDocument(str(nfo["toolTip"]["docName"])).getObject(
+            str(nfo["toolTip"]["name"])
+        )
 
         # This is really a bad way to do this… to prevent the setExtraInfo function from
         # finalizing the object, we remove the parent ourselves.
@@ -115,12 +120,22 @@ def documentResultsProvider():
         group = []
         for o in doc.Objects:
             # all_actions.append(lambda: )
-            action = {"handler": "documentObject", "document": o.Document.Name, "object": o.Name}
+            action = {
+                "handler": "documentObject",
+                "document": o.Document.Name,
+                "object": o.Name,
+            }
             item = {
-                "icon": o.ViewObject.Icon if o.ViewObject and o.ViewObject.Icon else None,
+                "icon": (
+                    o.ViewObject.Icon if o.ViewObject and o.ViewObject.Icon else None
+                ),
                 "text": o.Label + " (" + o.Name + ")",
                 # TODO: preview of the object
-                "toolTip": {"label": o.Label, "name": o.Name, "docName": o.Document.Name},
+                "toolTip": {
+                    "label": o.Label,
+                    "name": o.Name,
+                    "docName": o.Document.Name,
+                },
                 "action": action,
                 "subitems": [],
             }

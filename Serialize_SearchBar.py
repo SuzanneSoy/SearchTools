@@ -3,7 +3,12 @@ from PySide import QtGui
 import json
 
 
-def iconToBase64(icon: QtGui.QIcon, sz=QtCore.QSize(64, 64), mode=QtGui.QIcon.Mode.Normal, state=QtGui.QIcon.State.On):
+def iconToBase64(
+    icon: QtGui.QIcon,
+    sz=QtCore.QSize(64, 64),
+    mode=QtGui.QIcon.Mode.Normal,
+    state=QtGui.QIcon.State.On,
+):
     """
     Converts a QIcon to a Base64-encoded string representation of its pixmap.
 
@@ -59,8 +64,13 @@ def serializeIcon(icon):
             "selected": QtGui.QIcon.Mode.Selected,
         }.items():
             iconPixmaps[strW][strH][strMode] = {}
-            for strState, state in {"off": QtGui.QIcon.State.Off, "on": QtGui.QIcon.State.On}.items():
-                iconPixmaps[strW][strH][strMode][strState] = iconToBase64(icon, sz, mode, state)
+            for strState, state in {
+                "off": QtGui.QIcon.State.Off,
+                "on": QtGui.QIcon.State.On,
+            }.items():
+                iconPixmaps[strW][strH][strMode][strState] = iconToBase64(
+                    icon, sz, mode, state
+                )
     return iconPixmaps
 
 
@@ -87,9 +97,15 @@ def deserializeIcon(iconPixmaps):
                     "selected": QtGui.QIcon.Mode.Selected,
                 }[strMode]
                 for strState, statePixmap in modePixmaps.items():
-                    state = {"off": QtGui.QIcon.State.Off, "on": QtGui.QIcon.State.On}[strState]
+                    state = {"off": QtGui.QIcon.State.Off, "on": QtGui.QIcon.State.On}[
+                        strState
+                    ]
                     pxm = QtGui.QPixmap()
-                    pxm.loadFromData(QtCore.QByteArray.fromBase64(bytearray(statePixmap.encode("utf-8"))))
+                    pxm.loadFromData(
+                        QtCore.QByteArray.fromBase64(
+                            bytearray(statePixmap.encode("utf-8"))
+                        )
+                    )
                     ico.addPixmap(pxm, mode, state)
     return ico
 

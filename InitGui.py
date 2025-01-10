@@ -25,21 +25,33 @@ def addToolSearchBox():
         if sea is None:
             sea = SearchBoxLight.SearchBoxLight(
                 getItemGroups=lambda: __import__("GetItemGroups").getItemGroups(),
-                getToolTip=lambda groupId, setParent: __import__("GetItemGroups").getToolTip(groupId, setParent),
-                getItemDelegate=lambda: __import__("IndentedItemDelegate").IndentedItemDelegate(),
+                getToolTip=lambda groupId, setParent: __import__(
+                    "GetItemGroups"
+                ).getToolTip(groupId, setParent),
+                getItemDelegate=lambda: __import__(
+                    "IndentedItemDelegate"
+                ).IndentedItemDelegate(),
             )
             sea.resultSelected.connect(
-                lambda index, groupId: __import__("GetItemGroups").onResultSelected(index, groupId)
+                lambda index, groupId: __import__("GetItemGroups").onResultSelected(
+                    index, groupId
+                )
             )
 
         if wax is None:
             wax = QtGui.QWidgetAction(None)
             wax.setWhatsThis(
-                translate("SearchBar", "Use this search bar to find tools, document objects, preferences and more")
+                translate(
+                    "SearchBar",
+                    "Use this search bar to find tools, document objects, preferences and more",
+                )
             )
 
         sea.setWhatsThis(
-            translate("SearchBar", "Use this search bar to find tools, document objects, preferences and more")
+            translate(
+                "SearchBar",
+                "Use this search bar to find tools, document objects, preferences and more",
+            )
         )
         wax.setDefaultWidget(sea)
         ##mbr.addWidget(sea)

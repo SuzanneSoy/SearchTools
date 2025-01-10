@@ -42,7 +42,12 @@ def getParamGroups(nameInConfig, nameInPath):
     def recur(atRoot, path, name, tree):
         params = [] if atRoot else getParamGroup(path)
         subgroups = [
-            recur(False, path + (":" if atRoot else "/") + child.attrib["Name"], child.attrib["Name"], child)
+            recur(
+                False,
+                path + (":" if atRoot else "/") + child.attrib["Name"],
+                child.attrib["Name"],
+                child,
+            )
             for child in tree.getchildren()
             if child.tag == "FCParamGroup"
         ]
