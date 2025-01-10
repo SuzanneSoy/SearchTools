@@ -41,6 +41,12 @@ class SearchBoxLight(QtGui.QLineEdit):
 
         return types.MethodType(f, self)
 
+    def MousePressEvent(self, *args, **kwargs):
+        return self.proxyMousePressEvent(*args, **kwargs)
+
+    def MouseMoveEvent(self, *args, **kwargs):
+        return self.proxyMouseMoveEvent(*args, **kwargs)
+
     def focusInEvent(self, *args, **kwargs):
         return self.proxyFocusInEvent(*args, **kwargs)
 
