@@ -3,10 +3,11 @@ from PySide import QtGui
 from PySide import QtCore
 import FreeCADGui  # just used for FreeCADGui.updateGui()
 from SearchBoxLight import SearchBoxLight
+import Parameters_SearchBar as Parameters
+
+genericToolIcon = QtGui.QIcon(QtGui.QIcon(Parameters.genericToolIcon_Pixmap))
 
 globalIgnoreFocusOut = False
-
-genericToolIcon = QtGui.QIcon(QtGui.QIcon(os.path.dirname(__file__) + "/Tango-Tools-spanner-hammer.svg"))
 
 
 def easyToolTipWidget(html):

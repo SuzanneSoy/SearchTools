@@ -3,11 +3,9 @@ import FreeCAD as App
 import FreeCADGui
 from PySide import QtGui
 import Serialize_SearchBar
-import path
+import Parameters_SearchBar as Parameters
 
-ICON_LOCATION = os.path.join(os.path.dirname(__file__), "Resources", "Icons")
-
-genericToolIcon = QtGui.QIcon(QtGui.QIcon(os.path.join(ICON_LOCATION, "Tango-Tools-spanner-hammer.svg")))
+genericToolIcon = QtGui.QIcon(QtGui.QIcon(Parameters.genericToolIcon_Pixmap))
 
 
 def getParam(grpPath, type_, name):
