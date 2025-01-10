@@ -1,7 +1,14 @@
+import FreeCAD as App
+import FreeCADGui as Gui
+
 # Avoid garbage collection by storing the action in a global variable
 wax = None
 sea = None
 tbr = None
+
+
+def QT_TRANSLATE_NOOP(context, text):
+    return text
 
 
 def addToolSearchBox():
@@ -9,24 +16,43 @@ def addToolSearchBox():
     from PySide import QtGui
     import SearchBoxLight
 
+    # Define the translation
+    translate = App.Qt.translate
+
     global wax, sea, tbr
     mw = FreeCADGui.getMainWindow()
     if mw:
         if sea is None:
             sea = SearchBoxLight.SearchBoxLight(
                 getItemGroups=lambda: __import__("GetItemGroups").getItemGroups(),
-                getToolTip=lambda groupId, setParent: __import__("GetItemGroups").getToolTip(groupId, setParent),
-                getItemDelegate=lambda: __import__("IndentedItemDelegate").IndentedItemDelegate(),
+                getToolTip=lambda groupId, setParent: __import__(
+                    "GetItemGroups"
+                ).getToolTip(groupId, setParent),
+                getItemDelegate=lambda: __import__(
+                    "IndentedItemDelegate"
+                ).IndentedItemDelegate(),
             )
             sea.resultSelected.connect(
-                lambda index, groupId: __import__("GetItemGroups").onResultSelected(index, groupId)
+                lambda index, groupId: __import__("GetItemGroups").onResultSelected(
+                    index, groupId
+                )
             )
 
         if wax is None:
             wax = QtGui.QWidgetAction(None)
-            wax.setWhatsThis("Use this search bar to find tools, document objects, preferences and more")
+            wax.setWhatsThis(
+                translate(
+                    "SearchBar",
+                    "Use this search bar to find tools, document objects, preferences and more",
+                )
+            )
 
-        sea.setWhatsThis("Use this search bar to find tools, document objects, preferences and more")
+        sea.setWhatsThis(
+            translate(
+                "SearchBar",
+                "Use this search bar to find tools, document objects, preferences and more",
+            )
+        )
         wax.setDefaultWidget(sea)
         ##mbr.addWidget(sea)
         # mbr.addAction(wax)

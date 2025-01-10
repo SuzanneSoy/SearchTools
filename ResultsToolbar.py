@@ -1,11 +1,20 @@
+import FreeCAD as App
 from PySide import QtGui
 import FreeCADGui
 import Serialize_SearchBar
 
+# Define the translation
+translate = App.Qt.translate
+
 
 def toolbarAction(nfo):
     act = nfo["action"]
-    print("show toolbar " + act["toolbar"] + " from workbenches " + repr(act["workbenches"]))
+    print(
+        "show toolbar "
+        + act["toolbar"]
+        + " from workbenches "
+        + repr(act["workbenches"])
+    )
 
 
 def subToolAction(nfo):
@@ -41,7 +50,10 @@ def subToolAction(nfo):
                         return True
                     elif action is not None:
                         print(
-                            "Run action of tool " + toolPath + " available in workbenches " + repr(act["workbenches"])
+                            "Run action of tool "
+                            + toolPath
+                            + " available in workbenches "
+                            + repr(act["workbenches"])
                         )
                         action.trigger()
                         return True
@@ -55,14 +67,22 @@ def subToolAction(nfo):
             FreeCADGui.activateWorkbench(workbench)
             if runTool():
                 return
-    print("Tool " + toolPath + " not found, was it offered by an extension that is no longer present?")
+    print(
+        "Tool "
+        + toolPath
+        + " not found, was it offered by an extension that is no longer present?"
+    )
 
 
 def toolbarToolTip(nfo, setParent):
     workbenches = FreeCADGui.listWorkbenches()
     in_workbenches = [
         "<li>"
-        + (Serialize_SearchBar.iconToHTML(QtGui.QIcon(workbenches[wb].Icon)) if wb in workbenches else "? ")
+        + (
+            Serialize_SearchBar.iconToHTML(QtGui.QIcon(workbenches[wb].Icon))
+            if wb in workbenches
+            else "? "
+        )
         + wb
         + "</li>"
         for wb in nfo["action"]["workbenches"]
@@ -77,7 +97,12 @@ def toolbarToolTip(nfo, setParent):
 
 
 def subToolToolTip(nfo, setParent):
-    return Serialize_SearchBar.iconToHTML(nfo["icon"], 32) + "<p>" + nfo["toolTip"] + "</p>"
+    return (
+        Serialize_SearchBar.iconToHTML(nfo["icon"], 32)
+        + "<p>"
+        + nfo["toolTip"]
+        + "</p>"
+    )
 
 
 def getAllToolbars():
@@ -140,10 +165,20 @@ def toolbarResultsProvider():
                         "showMenu": bool(men),
                     }
                     group.append(
-                        {"icon": icon, "text": text, "toolTip": tbt.toolTip(), "action": action, "subitems": subgroup}
+                        {
+                            "icon": icon,
+                            "text": text,
+                            "toolTip": tbt.toolTip(),
+                            "action": action,
+                            "subitems": subgroup,
+                        }
                     )
             # TODO: move the 'workbenches' field to the itemgroup
-            action = {"handler": "toolbar", "workbenches": toolbarIsInWorkbenches, "toolbar": toolbarName}
+            action = {
+                "handler": "toolbar",
+                "workbenches": toolbarIsInWorkbenches,
+                "toolbar": toolbarName,
+            }
             itemGroups.append(
                 {
                     "icon": QtGui.QIcon(":/icons/Group.svg"),

@@ -6,7 +6,9 @@ from PySide import QtCore
 class SearchBoxLight(QtGui.QLineEdit):
     resultSelected = QtCore.Signal(int, int)
 
-    def __init__(self, getItemGroups, getToolTip, getItemDelegate, maxVisibleRows=20, parent=None):
+    def __init__(
+        self, getItemGroups, getToolTip, getItemDelegate, maxVisibleRows=20, parent=None
+    ):
         self.isInitialized = False
 
         # Store arguments
@@ -25,7 +27,9 @@ class SearchBoxLight(QtGui.QLineEdit):
         self.addAction(ico, QtGui.QLineEdit.LeadingPosition)
         self.setClearButtonEnabled(True)
         self.setPlaceholderText("Search tools, prefs & tree")
-        self.setFixedWidth(200)  # needed to avoid a change of width when the clear button appears/disappears
+        self.setFixedWidth(
+            200
+        )  # needed to avoid a change of width when the clear button appears/disappears
 
     def lazyInit(self):
         pass
@@ -40,6 +44,12 @@ class SearchBoxLight(QtGui.QLineEdit):
             return getattr(SearchBox.SearchBox, name)(*args, **kwargs)
 
         return types.MethodType(f, self)
+
+    def MousePressEvent(self, *args, **kwargs):
+        return self.proxyMousePressEvent(*args, **kwargs)
+
+    def MouseMoveEvent(self, *args, **kwargs):
+        return self.proxyMouseMoveEvent(*args, **kwargs)
 
     def focusInEvent(self, *args, **kwargs):
         return self.proxyFocusInEvent(*args, **kwargs)

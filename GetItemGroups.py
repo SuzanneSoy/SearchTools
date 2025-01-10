@@ -1,7 +1,13 @@
+import FreeCAD as App
+import FreeCADGui as Gui
+
 globalGroups = []
 
 itemGroups = None
 serializedItemGroups = None
+
+# Define the translation
+translate = App.Qt.translate
 
 
 def onResultSelected(index, groupId):
@@ -17,8 +23,11 @@ def onResultSelected(index, groupId):
 
         QtGui.QMessageBox.warning(
             None,
-            "Could not execute this action",
-            "Could not execute this action, it could be from a Mod that has been uninstalled. Try refreshing the list of tools.",
+            translate("SearchBar", "Could not execute this action"),
+            translate(
+                "SearchBar",
+                "Could not execute this action, it could be from a Mod that has been uninstalled. Try refreshing the list of tools.",
+            ),
         )
 
 
@@ -31,7 +40,10 @@ def getToolTip(groupId, setParent):
     if handlerName in SearchResults.toolTipHandlers:
         return SearchResults.toolTipHandlers[handlerName](nfo, setParent)
     else:
-        return "Could not load tooltip for this tool, it could be from a Mod that has been uninstalled. Try refreshing the list of tools."
+        return translate(
+            "SearchBar",
+            "Could not load tooltip for this tool, it could be from a Mod that has been uninstalled. Try refreshing the list of tools.",
+        )
 
 
 def getItemGroups():

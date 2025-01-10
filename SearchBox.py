@@ -1,23 +1,63 @@
+import FreeCAD as App
+import FreeCADGui as Gui
 import os
-from PySide import QtGui
-from PySide import QtCore
-import FreeCADGui  # just used for FreeCADGui.updateGui()
+
+from PySide.QtCore import (
+    Qt,
+    SIGNAL,
+    QSize,
+    QIdentityProxyModel,
+    QPoint,
+)
+from PySide.QtWidgets import (
+    QTabWidget,
+    QSlider,
+    QSpinBox,
+    QCheckBox,
+    QComboBox,
+    QLabel,
+    QTabWidget,
+    QSizePolicy,
+    QPushButton,
+    QLineEdit,
+    QTextEdit,
+    QListView,
+    QAbstractItemView,
+    QWidget,
+    QVBoxLayout,
+    QApplication,
+    QListWidget,
+)
+from PySide.QtGui import (
+    QIcon,
+    QPixmap,
+    QColor,
+    QStandardItemModel,
+    QShortcut,
+    QKeySequence,
+    QStandardItem,
+)
+
 from SearchBoxLight import SearchBoxLight
+import Parameters_SearchBar as Parameters
+
+genericToolIcon = QIcon(Parameters.genericToolIcon_Pixmap)
 
 globalIgnoreFocusOut = False
 
-genericToolIcon = QtGui.QIcon(QtGui.QIcon(os.path.dirname(__file__) + "/Tango-Tools-spanner-hammer.svg"))
+# Define the translation
+translate = App.Qt.translate
 
 
 def easyToolTipWidget(html):
-    foo = QtGui.QTextEdit()
+    foo = QTextEdit()
     foo.setReadOnly(True)
-    foo.setAlignment(QtCore.Qt.AlignTop)
+    foo.setAlignment(Qt.AlignmentFlag.AlignTop)
     foo.setText(html)
     return foo
 
 
-class SearchBox(QtGui.QLineEdit):
+class SearchBox(QLineEdit):
     # The following block of code is present in the lightweight proxy SearchBoxLight
     """
     resultSelected = QtCore.Signal(int, int)
@@ -38,8 +78,8 @@ class SearchBox(QtGui.QLineEdit):
     # Connect signals and slots
     self.textChanged.connect(self.filterModel)
     # Thanks to https://saurabhg.com/programming/search-box-using-qlineedit/ for indicating a few useful options
-    ico = QtGui.QIcon(':/icons/help-browser.svg')
-    #ico = QtGui.QIcon(':/icons/WhatsThis.svg')
+    ico = QIcon(':/icons/help-browser.svg')
+    #ico = QIcon(':/icons/WhatsThis.svg')
     self.addAction(ico, QtGui.QLineEdit.LeadingPosition)
     self.setClearButtonEnabled(True)
     self.setPlaceholderText('Search tools, prefs & tree')
@@ -51,27 +91,32 @@ class SearchBox(QtGui.QLineEdit):
         self.getItemGroups = getItemGroups
         self.getToolTip = getToolTip
         self.itemGroups = None  # Will be initialized by calling getItemGroups() the first time the search box gains focus, through focusInEvent and refreshItemGroups
-        self.maxVisibleRows = maxVisibleRows  # TODO: use this to compute the correct height
+        self.maxVisibleRows = (
+            maxVisibleRows  # TODO: use this to compute the correct height
+        )
         # Create proxy model
-        self.proxyModel = QtCore.QIdentityProxyModel()
+        self.proxyModel = QIdentityProxyModel()
         # Filtered model to which items are manually added. Store it as a property of the object instead of a local variable, to prevent grbage collection.
-        self.mdl = QtGui.QStandardItemModel()
+        self.mdl = QStandardItemModel()
         # self.proxyModel.setModel(self.model)
         # Create list view
-        self.listView = QtGui.QListView(self)
-        self.listView.setWindowFlags(QtGui.Qt.ToolTip)
-        self.listView.setWindowFlag(QtGui.Qt.FramelessWindowHint)
-        self.listView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.listView = QListView(self)
+        self.listView.setWindowFlags(Qt.WindowType.ToolTip)
+        self.listView.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.listView.setSelectionMode(self.listView.SelectionMode.SingleSelection)
         self.listView.setModel(self.proxyModel)
-        self.listView.setItemDelegate(getItemDelegate())  # https://stackoverflow.com/a/65930408/324969
+        self.listView.setItemDelegate(
+            getItemDelegate()
+        )  # https://stackoverflow.com/a/65930408/324969
+        self.listView.setMouseTracking(True)
         # make the QListView non-editable
-        self.listView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.listView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         # Create pane for showing extra info about the currently-selected tool
         # self.extraInfo = QtGui.QLabel()
-        self.extraInfo = QtGui.QWidget()
-        self.extraInfo.setWindowFlags(QtGui.Qt.ToolTip)
-        self.extraInfo.setWindowFlag(QtGui.Qt.FramelessWindowHint)
-        self.extraInfo.setLayout(QtGui.QVBoxLayout())
+        self.extraInfo = QWidget()
+        self.extraInfo.setWindowFlags(Qt.WindowType.ToolTip)
+        self.extraInfo.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.extraInfo.setLayout(QVBoxLayout())
         self.extraInfo.layout().setContentsMargins(0, 0, 0, 0)
         self.setExtraInfoIsActive = False
         self.pendingExtraInfo = None
@@ -79,46 +124,68 @@ class SearchBox(QtGui.QLineEdit):
         # Connect signals and slots
         self.listView.clicked.connect(lambda x: self.selectResult("select", x))
         self.listView.selectionModel().selectionChanged.connect(self.onSelectionChanged)
+        # Add custom mouse events. On windows the click events were not working for Searcbar versions 1.2.x and older.
+        # These events and their proxies in the SearchBorLight fixes this
+        self.listView.mousePressEvent = lambda event: self.proxyMousePressEvent(event)
+        self.listView.mouseMoveEvent = lambda event: self.proxyMouseMoveEvent(event)
 
         # Note: should probably use the eventFilter method instead...
-        wdgctx = QtCore.Qt.ShortcutContext.WidgetShortcut
+        wdgctx = Qt.ShortcutContext.WidgetShortcut
 
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Down), self, context=wdgctx).activated.connect(self.listDown)
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Up), self, context=wdgctx).activated.connect(self.listUp)
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_PageDown), self, context=wdgctx).activated.connect(
-            self.listPageDown
+        QShortcut(
+            QKeySequence(Qt.Key.Key_Down), self, context=wdgctx
+        ).activated.connect(self.listDown)
+        QShortcut(QKeySequence(Qt.Key.Key_Up), self, context=wdgctx).activated.connect(
+            self.listUp
         )
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_PageUp), self, context=wdgctx).activated.connect(
-            self.listPageUp
-        )
+        QShortcut(
+            QKeySequence(Qt.Key.Key_PageDown), self, context=wdgctx
+        ).activated.connect(self.listPageDown)
+        QShortcut(
+            QKeySequence(Qt.Key.Key_PageUp), self, context=wdgctx
+        ).activated.connect(self.listPageUp)
 
         # Home and End do not work, for some reason.
-        # QtGui.QShortcut(QtGui.QKeySequence.MoveToEndOfDocument, self, context = wdgctx).activated.connect(self.listEnd)
-        # QtGui.QShortcut(QtGui.QKeySequence.MoveToStartOfDocument, self, context = wdgctx).activated.connect(self.listStart)
-        # QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_End), self, context = wdgctx).activated.connect(self.listEnd)
-        # QtGui.QShortcut(QtGui.QKeySequence('Home'), self, context = wdgctx).activated.connect(self.listStart)
+        # QShortcut(QKeySequence.MoveToEndOfDocument, self, context = wdgctx).activated.connect(self.listEnd)
+        # QShortcut(QKeySequence.MoveToStartOfDocument, self, context = wdgctx).activated.connect(self.listStart)
+        # QShortcut(QKeySequence(Qt.Key.Key_End), self, context = wdgctx).activated.connect(self.listEnd)
+        # QShortcut(QKeySequence('Home'), self, context = wdgctx).activated.connect(self.listStart)
 
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Enter), self, context=wdgctx).activated.connect(
-            self.listAccept
-        )
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return), self, context=wdgctx).activated.connect(
-            self.listAccept
-        )
-        QtGui.QShortcut(QtGui.QKeySequence("Ctrl+Return"), self, context=wdgctx).activated.connect(
+        QShortcut(
+            QKeySequence(Qt.Key.Key_Enter), self, context=wdgctx
+        ).activated.connect(self.listAccept)
+        QShortcut(
+            QKeySequence(Qt.Key.Key_Return), self, context=wdgctx
+        ).activated.connect(self.listAccept)
+        QShortcut(QKeySequence("Ctrl+Return"), self, context=wdgctx).activated.connect(
             self.listAcceptToggle
         )
-        QtGui.QShortcut(QtGui.QKeySequence("Ctrl+Enter"), self, context=wdgctx).activated.connect(self.listAcceptToggle)
-        QtGui.QShortcut(QtGui.QKeySequence("Ctrl+Space"), self, context=wdgctx).activated.connect(self.listAcceptToggle)
-
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Escape), self, context=wdgctx).activated.connect(
-            self.listCancel
+        QShortcut(QKeySequence("Ctrl+Enter"), self, context=wdgctx).activated.connect(
+            self.listAcceptToggle
         )
+        QShortcut(QKeySequence("Ctrl+Space"), self, context=wdgctx).activated.connect(
+            self.listAcceptToggle
+        )
+
+        QShortcut(
+            QKeySequence(Qt.Key.Key_Escape), self, context=wdgctx
+        ).activated.connect(self.listCancel)
 
         # Initialize the model with the full list (assuming the text() is empty)
         # self.proxyFilterModel(self.text()) # This is done by refreshItemGroups on focusInEvent, because the initial loading from cache can take time
         self.firstShowList = True
         self.isInitialized = True
         return self
+
+    @staticmethod
+    def proxyMousePressEvent(self, event):
+        self.selectResult(mode=None, index=self.listView.currentIndex())
+        return
+
+    @staticmethod
+    def proxyMouseMoveEvent(self, arg__1):
+        self.listView.setCurrentIndex(self.listView.indexAt(arg__1.pos()))
+        return
 
     @staticmethod
     def refreshItemGroups(self):
@@ -128,18 +195,23 @@ class SearchBox(QtGui.QLineEdit):
     @staticmethod
     def proxyFocusInEvent(self, qFocusEvent):
         if self.firstShowList:
-            mdl = QtGui.QStandardItemModel()
+            mdl = QStandardItemModel()
             mdl.appendRow(
                 [
-                    QtGui.QStandardItem(genericToolIcon, "Please wait, loading results from cache…"),
-                    QtGui.QStandardItem("0"),
-                    QtGui.QStandardItem("-1"),
+                    QStandardItem(
+                        genericToolIcon,
+                        translate(
+                            "SearchBar", "Please wait, loading results from cache…"
+                        ),
+                    ),
+                    QStandardItem("0"),
+                    QStandardItem("-1"),
                 ]
             )
             self.proxyModel.setSourceModel(mdl)
             self.showList()
             self.firstShowList = False
-            FreeCADGui.updateGui()
+            Gui.updateGui()
         global globalIgnoreFocusOut
         if not globalIgnoreFocusOut:
             self.refreshItemGroups()
@@ -175,11 +247,17 @@ class SearchBox(QtGui.QLineEdit):
 
     @staticmethod
     def proxyListPageDown(self):
-        self.movementKey(lambda current, nbRows: min(current + max(1, self.maxVisibleRows / 2), nbRows - 1))
+        self.movementKey(
+            lambda current, nbRows: min(
+                current + max(1, self.maxVisibleRows / 2), nbRows - 1
+            )
+        )
 
     @staticmethod
     def proxyListPageUp(self):
-        self.movementKey(lambda current, nbRows: max(current - max(1, self.maxVisibleRows / 2), 0))
+        self.movementKey(
+            lambda current, nbRows: max(current - max(1, self.maxVisibleRows / 2), 0)
+        )
 
     @staticmethod
     def proxyListEnd(self):
@@ -191,6 +269,7 @@ class SearchBox(QtGui.QLineEdit):
 
     @staticmethod
     def acceptKey(self, mode):
+        print(f"Got here, {mode}")
         currentIndex = self.listView.currentIndex()
         self.showList()
         if currentIndex.isValid():
@@ -219,9 +298,9 @@ class SearchBox(QtGui.QLineEdit):
         key = qKeyEvent.key()
         modifiers = qKeyEvent.modifiers()
         self.showList()
-        if key == QtCore.Qt.Key_Home and modifiers & QtCore.Qt.CTRL != 0:
+        if key == Qt.Key.Key_Home and modifiers & Qt.Key.CTRL != 0:
             self.listStart()
-        elif key == QtCore.Qt.Key_End and modifiers & QtCore.Qt.CTRL != 0:
+        elif key == Qt.Key.Key_End and modifiers & Qt.Key.CTRL != 0:
             self.listEnd()
         else:
             super(SearchBoxLight, self).keyPressEvent(qKeyEvent)
@@ -243,8 +322,9 @@ class SearchBox(QtGui.QLineEdit):
         self.extraInfo.hide()
 
     @staticmethod
-    def selectResult(self, mode, index):
+    def selectResult(self, mode: None, index):
         groupId = int(index.model().itemData(index.siblingAtColumn(2))[0])
+        print(f"Got here, {index}")
         self.hideList()
         # TODO: allow other options, e.g. some items could act as combinators / cumulative filters
         self.setText("")
@@ -280,7 +360,7 @@ class SearchBox(QtGui.QLineEdit):
             groups = (filterGroup(group) for group in groups)
             return [group for group in groups if group is not None]
 
-        self.mdl = QtGui.QStandardItemModel()
+        self.mdl = QStandardItemModel()
         self.mdl.appendColumn([])
 
         def addGroups(filteredGroups, depth=0):
@@ -288,9 +368,9 @@ class SearchBox(QtGui.QLineEdit):
                 # TODO: this is not very clean, we should memorize the index from the original itemgroups
                 self.mdl.appendRow(
                     [
-                        QtGui.QStandardItem(group["icon"] or genericToolIcon, group["text"]),
-                        QtGui.QStandardItem(str(depth)),
-                        QtGui.QStandardItem(str(group["id"])),
+                        QStandardItem(group["icon"] or genericToolIcon, group["text"]),
+                        QStandardItem(str(depth)),
+                        QStandardItem(str(group["id"])),
                     ]
                 )
                 addGroups(group["subitems"], depth + 1)
@@ -313,12 +393,14 @@ class SearchBox(QtGui.QLineEdit):
         def getScreenPosition(widget):
             geo = widget.geometry()
             parent = widget.parent()
-            parentPos = getScreenPosition(parent) if parent is not None else QtCore.QPoint(0, 0)
-            return QtCore.QPoint(geo.x() + parentPos.x(), geo.y() + parentPos.y())
+            parentPos = (
+                getScreenPosition(parent) if parent is not None else QPoint(0, 0)
+            )
+            return QPoint(geo.x() + parentPos.x(), geo.y() + parentPos.y())
 
         pos = getScreenPosition(self)
         siz = self.size()
-        screen = QtGui.QGuiApplication.screenAt(pos)
+        screen = QApplication.screenAt(pos)
         x = pos.x()
         y = pos.y() + siz.height()
         hint_w = self.listView.sizeHint().width()
@@ -345,7 +427,7 @@ class SearchBox(QtGui.QLineEdit):
 
     @staticmethod
     def proxyOnSelectionChanged(self, selected, deselected):
-        # The list has .setSelectionMode(QtGui.QAbstractItemView.SingleSelection),
+        # The list has .setSelectionMode(QAbstractItemView.SingleSelection),
         # so there is always at most one index in selected.indexes() and at most one
         # index in deselected.indexes()
         selected = selected.indexes()

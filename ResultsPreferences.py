@@ -3,8 +3,9 @@ import FreeCAD as App
 import FreeCADGui
 from PySide import QtGui
 import Serialize_SearchBar
+import Parameters_SearchBar as Parameters
 
-genericToolIcon = QtGui.QIcon(QtGui.QIcon(os.path.dirname(__file__) + "/Tango-Tools-spanner-hammer.svg"))
+genericToolIcon = QtGui.QIcon(QtGui.QIcon(Parameters.genericToolIcon_Pixmap))
 
 
 def getParam(grpPath, type_, name):
@@ -41,7 +42,12 @@ def getParamGroups(nameInConfig, nameInPath):
     def recur(atRoot, path, name, tree):
         params = [] if atRoot else getParamGroup(path)
         subgroups = [
-            recur(False, path + (":" if atRoot else "/") + child.attrib["Name"], child.attrib["Name"], child)
+            recur(
+                False,
+                path + (":" if atRoot else "/") + child.attrib["Name"],
+                child.attrib["Name"],
+                child,
+            )
             for child in tree.getchildren()
             if child.tag == "FCParamGroup"
         ]

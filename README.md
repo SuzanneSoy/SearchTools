@@ -14,7 +14,7 @@ It can be extended by other mods, by adding a new result provider.
 
 The search bar appears next to the [`What's this?`](https://wiki.freecad.org/Std_WhatsThis) tool <a href="https://wiki.freecad.org/Std_WhatsThis"><img src="https://user-images.githubusercontent.com/4140247/156215976-5dfadb0c-cac4-44b2-8ad4-b67462a5f7fa.png" alt="drawing" width="20px" height="20px"/></a> in FreeCAD's default File toolbar.
 
-![Screenshot of the search bar, with results in its drop-down menu and extra info about the result in a separate pane](screenshot.png)
+![Screenshot of the search bar, with results in its drop-down menu and extra info about the result in a separate pane](Resources/Images/screenshot.png)
 
 When using the search bar for the first time, it will contain only the tools of the workbenches which have already been loaded in FreeCAD.
 To include results from other workbenches, select the first search result "Refresh list of tools" which will load all FreeCAD workbenches
@@ -22,20 +22,20 @@ and memorize their tools. After restarting FreeCAD, the search result will inclu
 been loaded yet. When selecting a tool from the search results, SearchBar will attempt to automatically load the workbenches which could
 have provided that tool.
 
-![Animation showing how to initially load all workbenches using the first entry in the search bar](animAopt.gif)
+![Animation showing how to initially load all workbenches using the first entry in the search bar](Resources/Images/animAopt.gif)
 
 To navigate the search results, use the up and down arrows. Typing characters will filter the results on the fly. The extended information
 panel next to the search results provides further documentation about the results, e.g. Python snippets which can be copy-pasted (note:
 currently a bug crashes FreeCAD if using the context menu to perform the copy, please do not use the context menu until
 https://github.com/SuzanneSoy/SearchBar/issues/12 is fixed.
 
-![Animation showing how to navigate the search results with the up and down keys and select code examples from the results](animB2op.gif)
+![Animation showing how to navigate the search results with the up and down keys and select code examples from the results](Resources/Images/animB2op.gif)
 
 ### Installation
 
 #### Automatic Install
 
-Install **SearchBar** addon via the FreeCAD Addon Manager from the **Tools** :arrow_right: **Addon Manager** dropdown menu. 
+Install **SearchBar** addon via the FreeCAD Addon Manager from the **Tools** :arrow_right: **Addon Manager** dropdown menu.
 
 #### Manual Install
 
@@ -64,7 +64,7 @@ Clone the GIT repository or extract the `.zip` downloaded from GitHub to the fol
 
 ### Feedback
 
-To report bugs or feature enhancements, please open a ticket in the [issue queue](https://github.com/APEbbers/SearchBar/issues). Best place to discuss feedback or issues in on the [dedicated FreeCAD forum discussion]() for SearchBar. 
+To report bugs or feature enhancements, please open a ticket in the [issue queue](https://github.com/APEbbers/SearchBar/issues). Best place to discuss feedback or issues in on the [dedicated FreeCAD forum discussion]() for SearchBar.
 
 ### License [![License: CC0 v1.0.](https://img.shields.io/badge/license-CC0-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 See [LICENSE](LICENSE).
