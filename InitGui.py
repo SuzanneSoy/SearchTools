@@ -11,14 +11,13 @@ def QT_TRANSLATE_NOOP(context, text):
     return text
 
 
-# Define the translation
-translate = App.Qt.translate
-
-
 def addToolSearchBox():
     import FreeCADGui
     from PySide import QtGui
     import SearchBoxLight
+
+    # Define the translation
+    translate = App.Qt.translate
 
     global wax, sea, tbr
     mw = FreeCADGui.getMainWindow()
