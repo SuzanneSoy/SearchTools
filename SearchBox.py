@@ -1,4 +1,5 @@
-import FreeCADGui as Gui  # just used for FreeCADGui.updateGui()
+import FreeCAD as App
+import FreeCADGui as Gui
 import os
 
 from PySide.QtCore import (
@@ -43,6 +44,9 @@ import Parameters_SearchBar as Parameters
 genericToolIcon = QIcon(Parameters.genericToolIcon_Pixmap)
 
 globalIgnoreFocusOut = False
+
+# Define the translation
+translate = App.Qt.translate
 
 
 def easyToolTipWidget(html):
@@ -170,7 +174,7 @@ class SearchBox(QLineEdit):
             mdl = QStandardItemModel()
             mdl.appendRow(
                 [
-                    QStandardItem(genericToolIcon, "Please wait, loading results from cache…"),
+                    QStandardItem(genericToolIcon, translate("SearchBar", "Please wait, loading results from cache…")),
                     QStandardItem("0"),
                     QStandardItem("-1"),
                 ]

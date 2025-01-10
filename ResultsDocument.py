@@ -5,6 +5,9 @@ import FreeCADGui
 import SafeViewer
 import SearchBox
 
+# Define the translation
+translate = App.Qt.translate
+
 
 def documentAction(nfo):
     act = nfo["action"]

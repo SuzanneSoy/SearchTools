@@ -1,7 +1,18 @@
+import FreeCAD as App
+import FreeCADGui as Gui
+
 # Avoid garbage collection by storing the action in a global variable
 wax = None
 sea = None
 tbr = None
+
+
+def QT_TRANSLATE_NOOP(context, text):
+    return text
+
+
+# Define the translation
+translate = App.Qt.translate
 
 
 def addToolSearchBox():
@@ -24,9 +35,13 @@ def addToolSearchBox():
 
         if wax is None:
             wax = QtGui.QWidgetAction(None)
-            wax.setWhatsThis("Use this search bar to find tools, document objects, preferences and more")
+            wax.setWhatsThis(
+                translate("SearchBar", "Use this search bar to find tools, document objects, preferences and more")
+            )
 
-        sea.setWhatsThis("Use this search bar to find tools, document objects, preferences and more")
+        sea.setWhatsThis(
+            translate("SearchBar", "Use this search bar to find tools, document objects, preferences and more")
+        )
         wax.setDefaultWidget(sea)
         ##mbr.addWidget(sea)
         # mbr.addAction(wax)

@@ -1,6 +1,10 @@
+import FreeCAD as App
 from PySide import QtGui
 import FreeCADGui
 import Serialize_SearchBar
+
+# Define the translation
+translate = App.Qt.translate
 
 
 def toolbarAction(nfo):

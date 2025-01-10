@@ -1,9 +1,15 @@
+import FreeCAD as App
+import FreeCADGui as Gui
+
 import os
 from PySide import QtGui
 import Serialize_SearchBar
 import Parameters_SearchBar as Parameters
 
 genericToolIcon = QtGui.QIcon(QtGui.QIcon(Parameters.genericToolIcon_Pixmap))
+
+# Define the translation
+translate = App.Qt.translate
 
 
 def refreshToolsAction(nfo):
@@ -15,7 +21,12 @@ def refreshToolsAction(nfo):
 def refreshToolsToolTip(nfo, setParent):
     return (
         Serialize_SearchBar.iconToHTML(genericToolIcon)
-        + "<p>Load all workbenches to refresh this list of tools. This may take a minute, depending on the number of installed workbenches.</p>"
+        + "<p>"
+        + translate(
+            "SearchBar",
+            "Load all workbenches to refresh this list of tools. This may take a minute, depending on the number of installed workbenches.",
+        )
+        + "</p>"
     )
 
 
