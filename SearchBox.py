@@ -122,6 +122,8 @@ class SearchBox(QLineEdit):
         self.pendingExtraInfo = None
         self.currentExtraInfo = None
         # Connect signals and slots
+        self.listView.clicked.connect(lambda x: self.selectResult("select", x))
+        # self.listView.selectionModel().selectionChanged.connect(self.onSelectionChanged)
         # Add custom mouse events. On windows the click events were not working for Searcbar versions 1.2.x and older.
         # These events and their proxies in the SearchBorLight fixes this
         self.listView.mousePressEvent = lambda event: self.proxyMousePressEvent(event)
@@ -291,7 +293,6 @@ class SearchBox(QLineEdit):
 
     @staticmethod
     def acceptKey(self, mode):
-        print(f"Got here, {mode}")
         currentIndex = self.listView.currentIndex()
         self.showList()
         if currentIndex.isValid():
