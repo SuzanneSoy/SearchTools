@@ -25,9 +25,7 @@ have provided that tool.
 ![Animation showing how to initially load all workbenches using the first entry in the search bar](Resources/Images/animAopt.gif)
 
 To navigate the search results, use the up and down arrows. Typing characters will filter the results on the fly. The extended information
-panel next to the search results provides further documentation about the results, e.g. Python snippets which can be copy-pasted (note:
-currently a bug crashes FreeCAD if using the context menu to perform the copy, please do not use the context menu until
-https://github.com/SuzanneSoy/SearchBar/issues/12 is fixed.
+panel next to the search results provides further documentation about the results, e.g. Python snippets which can be copy-pasted.
 
 ![Animation showing how to navigate the search results with the up and down keys and select code examples from the results](Resources/Images/animB2op.gif)
 
