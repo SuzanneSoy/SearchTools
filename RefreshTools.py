@@ -14,15 +14,7 @@ def loadAllWorkbenches():
     lbl.show()
     lst = FreeCADGui.listWorkbenches()
     for i, wb in enumerate(lst):
-        msg = (
-            translate("SearchBar", "Loading workbench ")
-            + wb
-            + " ("
-            + str(i)
-            + "/"
-            + str(len(lst))
-            + ")"
-        )
+        msg = translate("SearchBar", "Loading workbench ") + wb + " (" + str(i) + "/" + str(len(lst)) + ")"
         print(msg)
         lbl.setText(msg)
         geo = lbl.geometry()
@@ -102,7 +94,7 @@ def refreshToolsAction():
         translate("SearchBar", "Load all workbenches?"),
         translate(
             "SearchBar",
-            'Load all workbenches? This can cause FreeCAD to become unstable, and this "reload tools" feature contained a bug that crashed freecad systematically, so please make sure you save your work before. It\'s a good idea to restart FreeCAD after this operation.',
+            """Load all workbenches? This can cause FreeCAD to become unstable, and this "reload tools" feature contained a bug that crashed freecad systematically, so please make sure you save your work before. It\'s a good idea to restart FreeCAD after this operation.""",
         ),
         QtGui.QMessageBox.Yes,
         QtGui.QMessageBox.No,
