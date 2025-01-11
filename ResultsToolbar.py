@@ -59,7 +59,7 @@ def subToolAction(nfo):
             try:
                 FreeCADGui.activateWorkbench(workbench)
             except Exception:
-                print("Workbench not present")
+                print("SearchBar: Workbench not present! Was it disabled?")
                 return
             if runTool():
                 return
