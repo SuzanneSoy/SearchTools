@@ -64,7 +64,11 @@ def subToolAction(nfo):
     else:
         for workbench in act["workbenches"]:
             print("Activating workbench " + workbench + " to access tool " + toolPath)
-            FreeCADGui.activateWorkbench(workbench)
+            try:
+                FreeCADGui.activateWorkbench(workbench)
+            except Exception:
+                print("SearchBar: Workbench not present! Was it disabled?")
+                return
             if runTool():
                 return
     print(
