@@ -24,7 +24,7 @@ def refreshToolsToolTip(nfo, setParent):
         + "<p>"
         + translate(
             "SearchBar",
-            "Load all workbenches to refresh this list of tools. This may take a minute, depending on the number of installed workbenches.",
+            "Load all workbenches to refresh the cached results. This may take a minute, depending on the number of installed workbenches.",
         )
         + "</p>"
     )
@@ -34,7 +34,7 @@ def refreshToolsResultsProvider():
     return [
         {
             "icon": genericToolIcon,
-            "text": "Refresh list of tools",
+            "text": translate("SearchBar", "Refresh cached results"),
             "toolTip": "",
             "action": {"handler": "refreshTools"},
             "subitems": [],

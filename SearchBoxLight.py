@@ -63,8 +63,8 @@ class SearchBoxLight(QtGui.QLineEdit):
     def keyPressEvent(self, *args, **kwargs):
         return self.proxyKeyPressEvent(*args, **kwargs)
 
-    # def onSelectionChanged(self, *args, **kwargs):
-    #     return self.proxyOnSelectionChanged(*args, **kwargs)
+    def onSelectionChanged(self, *args, **kwargs):
+        return self.proxyOnSelectionChanged(*args, **kwargs)
 
     def filterModel(self, *args, **kwargs):
         return self.proxyFilterModel(*args, **kwargs)

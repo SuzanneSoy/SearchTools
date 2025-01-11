@@ -5,7 +5,7 @@
 
   <description>Adds a search bar widget for tools, document objects, and preferences</description>
 
-  <version>1.3.1.2</version>
+  <version>1.3.2</version>
 
   <date>2022-06-01</date>
 
@@ -23,7 +23,7 @@
   <content>
     <workbench>
       <name>SearchBar</name>
-      <icon>Resource/Icons/Tango-System-search.svg</icon>
+      <icon>Tango-System-search.svg</icon>
       <subdirectory>./</subdirectory>
       <tag>search</tag>
       <tag>widget</tag>

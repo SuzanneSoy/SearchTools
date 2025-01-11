@@ -17,7 +17,7 @@ The search bar appears next to the [`What's this?`](https://wiki.freecad.org/Std
 ![Screenshot of the search bar, with results in its drop-down menu and extra info about the result in a separate pane](Resources/Images/screenshot.png)
 
 When using the search bar for the first time, it will contain only the tools of the workbenches which have already been loaded in FreeCAD.
-To include results from other workbenches, select the first search result "Refresh list of tools" which will load all FreeCAD workbenches
+To include results from other workbenches, select the first search result "Refresh cached results" which will load all FreeCAD workbenches
 and memorize their tools. After restarting FreeCAD, the search result will include the memorized tools, even if the workbenches have not
 been loaded yet. When selecting a tool from the search results, SearchBar will attempt to automatically load the workbenches which could
 have provided that tool.

@@ -122,8 +122,12 @@ class SearchBox(QLineEdit):
         self.pendingExtraInfo = None
         self.currentExtraInfo = None
         # Connect signals and slots
-        self.listView.clicked.connect(lambda x: self.selectResult("select", x))
-        # self.listView.selectionModel().selectionChanged.connect(self.onSelectionChanged)
+        self.listView.clicked.connect(
+            lambda x: self.selectResult("select", x)
+        )  # This makes all workbenches appear. TODO: findout why, a click event seems not logic
+        self.listView.selectionModel().selectionChanged.connect(
+            self.onSelectionChanged
+        )  # This updates the details when using the keyboard
         # Add custom mouse events. On windows the click events were not working for Searcbar versions 1.2.x and older.
         # These events and their proxies in the SearchBorLight fixes this
         self.listView.mousePressEvent = lambda event: self.proxyMousePressEvent(event)
@@ -446,6 +450,22 @@ class SearchBox(QLineEdit):
                 extraw = min(extraleftw, extraw)
         self.listView.setGeometry(x, y, w, h)
         self.extraInfo.setGeometry(extrax, y, extraw, h)
+
+    @staticmethod
+    def proxyOnSelectionChanged(self, selected, deselected):
+        # The list has .setSelectionMode(QAbstractItemView.SingleSelection),
+        # so there is always at most one index in selected.indexes() and at most one
+        # index in deselected.indexes()
+        selected = selected.indexes()
+        deselected = deselected.indexes()
+        if len(selected) > 0:
+            index = selected[0]
+            self.setExtraInfo(index)
+            # Poor attempt to circumvent a glitch where the extra info pane stays visible after pressing Return
+            if not self.listView.isHidden():
+                self.showExtraInfo()
+        elif len(deselected) > 0:
+            self.hideExtraInfo()
 
     @staticmethod
     def setExtraInfo(self, index):

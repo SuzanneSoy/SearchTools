@@ -93,7 +93,7 @@ def refreshToolbars(doLoadAllWorkbenches=True):
 def refreshToolsAction():
     from PySide import QtGui
 
-    print("Refresh list of tools")
+    print("Refresh cached results")
     fw = QtGui.QApplication.focusWidget()
     if fw is not None:
         fw.clearFocus()
@@ -102,7 +102,7 @@ def refreshToolsAction():
         translate("SearchBar", "Load all workbenches?"),
         translate(
             "SearchBar",
-            'Load all workbenches? This can cause FreeCAD to become unstable, and this "reload tools" feature contained a bug that crashed freecad systematically, so please make sure you save your work before. It\'s a good idea to restart FreeCAD after this operation.',
+            """Load all workbenches? This can cause FreeCAD to become unstable, and this "reload tools" feature contained a bug that crashed freecad systematically, so please make sure you save your work before. It\'s a good idea to restart FreeCAD after this operation.""",
         ),
         QtGui.QMessageBox.Yes,
         QtGui.QMessageBox.No,
