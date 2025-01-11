@@ -122,12 +122,11 @@ class SearchBox(QLineEdit):
         self.pendingExtraInfo = None
         self.currentExtraInfo = None
         # Connect signals and slots
-        self.listView.clicked.connect(lambda x: self.selectResult("select", x))
-        self.listView.selectionModel().selectionChanged.connect(self.onSelectionChanged)
         # Add custom mouse events. On windows the click events were not working for Searcbar versions 1.2.x and older.
         # These events and their proxies in the SearchBorLight fixes this
         self.listView.mousePressEvent = lambda event: self.proxyMousePressEvent(event)
         self.listView.mouseMoveEvent = lambda event: self.proxyMouseMoveEvent(event)
+        self.extraInfo.leaveEvent = lambda event: self.proxyLeaveEvent(event)
 
         # Note: should probably use the eventFilter method instead...
         wdgctx = Qt.ShortcutContext.WidgetShortcut
@@ -179,12 +178,23 @@ class SearchBox(QLineEdit):
 
     @staticmethod
     def proxyMousePressEvent(self, event):
-        self.selectResult(mode=None, index=self.listView.currentIndex())
+        if self.listView.underMouse():
+            self.selectResult(mode=None, index=self.listView.currentIndex())
+        else:
+            event.ignore()
         return
 
     @staticmethod
     def proxyMouseMoveEvent(self, arg__1):
-        self.listView.setCurrentIndex(self.listView.indexAt(arg__1.pos()))
+        index = self.listView.indexAt(arg__1.pos())
+        self.listView.setCurrentIndex(index)
+
+        self.setExtraInfo(index)
+        # Poor attempt to circumvent a glitch where the extra info pane stays visible after pressing Return
+        if not self.listView.isHidden():
+            self.showExtraInfo()
+        if self.listView.isHidden():
+            self.hideExtraInfo()
         return
 
     @staticmethod
@@ -194,6 +204,11 @@ class SearchBox(QLineEdit):
 
     @staticmethod
     def proxyFocusInEvent(self, qFocusEvent):
+        # if the extrainfo is under the cursor, don't focus but only show the list
+        if self.extraInfo.underMouse():
+            self.showList()
+            qFocusEvent.ignore()
+            return
         if self.firstShowList:
             mdl = QStandardItemModel()
             mdl.appendRow(
@@ -217,13 +232,20 @@ class SearchBox(QLineEdit):
             self.refreshItemGroups()
         self.showList()
         super(SearchBoxLight, self).focusInEvent(qFocusEvent)
+        return
 
     @staticmethod
     def proxyFocusOutEvent(self, qFocusEvent):
         global globalIgnoreFocusOut
         if not globalIgnoreFocusOut:
             self.hideList()
-            super(SearchBoxLight, self).focusOutEvent(qFocusEvent)
+            # super(SearchBoxLight, self).focusOutEvent(qFocusEvent)
+
+    @staticmethod
+    def proxyLeaveEvent(self, qFocusEvent):
+        self.clearFocus()
+        self.hideList()
+        return
 
     @staticmethod
     def movementKey(self, rowUpdate):
@@ -324,7 +346,6 @@ class SearchBox(QLineEdit):
     @staticmethod
     def selectResult(self, mode: None, index):
         groupId = int(index.model().itemData(index.siblingAtColumn(2))[0])
-        print(f"Got here, {index}")
         self.hideList()
         # TODO: allow other options, e.g. some items could act as combinators / cumulative filters
         self.setText("")
@@ -424,22 +445,6 @@ class SearchBox(QLineEdit):
                 extraw = min(extraleftw, extraw)
         self.listView.setGeometry(x, y, w, h)
         self.extraInfo.setGeometry(extrax, y, extraw, h)
-
-    @staticmethod
-    def proxyOnSelectionChanged(self, selected, deselected):
-        # The list has .setSelectionMode(QAbstractItemView.SingleSelection),
-        # so there is always at most one index in selected.indexes() and at most one
-        # index in deselected.indexes()
-        selected = selected.indexes()
-        deselected = deselected.indexes()
-        if len(selected) > 0:
-            index = selected[0]
-            self.setExtraInfo(index)
-            # Poor attempt to circumvent a glitch where the extra info pane stays visible after pressing Return
-            if not self.listView.isHidden():
-                self.showExtraInfo()
-        elif len(deselected) > 0:
-            self.hideExtraInfo()
 
     @staticmethod
     def setExtraInfo(self, index):
