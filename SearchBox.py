@@ -370,6 +370,8 @@ class SearchBox(QLineEdit):
                 return group
             else:
                 subitems = filterGroups(group["subitems"])
+                # if len(subitems) == 0:
+                #     self.index = 0
                 if len(subitems) > 0 or matches(group["text"]):
                     return {
                         "id": group["id"],
@@ -405,9 +407,10 @@ class SearchBox(QLineEdit):
         self.proxyModel.setSourceModel(self.mdl)
         self.currentExtraInfo = None  # Unset this so that the ExtraInfo can be updated
         # TODO: try to find the already-highlighted item
+        indexSelect = 1
         nbRows = self.listView.model().rowCount()
         if nbRows > 0:
-            index = self.listView.model().index(0, 0)
+            index = self.listView.model().index(indexSelect, 0)
             self.listView.setCurrentIndex(index)
             self.setExtraInfo(index)
         else:
