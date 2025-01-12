@@ -2,14 +2,14 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import os
 
-from PySide.QtCore import (
+from PySide6.QtCore import (
     Qt,
     SIGNAL,
     QSize,
     QIdentityProxyModel,
     QPoint,
 )
-from PySide.QtWidgets import (
+from PySide6.QtWidgets import (
     QTabWidget,
     QSlider,
     QSpinBox,
@@ -28,7 +28,7 @@ from PySide.QtWidgets import (
     QApplication,
     QListWidget,
 )
-from PySide.QtGui import (
+from PySide6.QtGui import (
     QIcon,
     QPixmap,
     QColor,
@@ -338,6 +338,8 @@ class SearchBox(QLineEdit):
                 return group
             else:
                 subitems = filterGroups(group["subitems"])
+                # if len(subitems) == 0:
+                #     self.index = 0
                 if len(subitems) > 0 or matches(group["text"]):
                     return {
                         "id": group["id"],
@@ -373,9 +375,10 @@ class SearchBox(QLineEdit):
         self.proxyModel.setSourceModel(self.mdl)
         self.currentExtraInfo = None  # Unset this so that the ExtraInfo can be updated
         # TODO: try to find the already-highlighted item
+        indexSelect = 1
         nbRows = self.listView.model().rowCount()
         if nbRows > 0:
-            index = self.listView.model().index(0, 0)
+            index = self.listView.model().index(indexSelect, 0)
             self.listView.setCurrentIndex(index)
             self.setExtraInfo(index)
         else:
