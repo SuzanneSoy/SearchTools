@@ -14,7 +14,15 @@ def loadAllWorkbenches():
     lbl.show()
     lst = FreeCADGui.listWorkbenches()
     for i, wb in enumerate(lst):
-        msg = translate("SearchBar", "Loading workbench ") + wb + " (" + str(i) + "/" + str(len(lst)) + ")"
+        msg = (
+            translate("SearchBar", "Loading workbench ")
+            + wb
+            + " ("
+            + str(i)
+            + "/"
+            + str(len(lst))
+            + ")"
+        )
         print(msg)
         lbl.setText(msg)
         geo = lbl.geometry()
